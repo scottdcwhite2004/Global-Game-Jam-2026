@@ -15,12 +15,24 @@ namespace MaskedSpirit.Scenes
     internal class TestScene : Scene
     {
         private Player mPlayer;
+        List<XP_Pickup> xpPickups = new List<XP_Pickup>();
+        SpriteFont mDefaultFont;
 
         public override void Draw(GameTime gameTime)
         {
             Core.GraphicsDevice.Clear(Color.CornflowerBlue);
             Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
             Core.SpriteBatch.Draw(mPlayer.mCurrentMaskSprite, mPlayer.mSourceRectangle, Color.White);
+            Core.SpriteBatch.DrawString(mDefaultFont, "XP: " + mPlayer.GetCurrentXP().ToString(), new Vector2(10, 10), Color.White);
+            Core.SpriteBatch.DrawString(mDefaultFont, "Level: " + mPlayer.GetCurrentLevel().ToString(), new Vector2(10, 30), Color.White);
+            foreach (XP_Pickup xp in xpPickups)
+            {
+                if(xp.isCollected)
+                {
+                    continue;
+                }
+                Core.SpriteBatch.Draw(xp.mTexture, xp.mCollisionRectangle, Color.White);
+            }
             Core.SpriteBatch.End();
 
             base.Draw(gameTime);
@@ -30,6 +42,11 @@ namespace MaskedSpirit.Scenes
         {
             base.Initialize();
             mPlayer = new Player(new Vector2(100, 100), false, Vector2.Zero);
+           xpPickups.Add(new XP_Pickup(new Vector2(200, 200)));
+              xpPickups.Add(new XP_Pickup(new Vector2(300, 150)));
+            xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
+            xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
+            mDefaultFont = Core.Content.Load<SpriteFont>("Default");
         }
 
         public override void LoadContent()
@@ -43,6 +60,18 @@ namespace MaskedSpirit.Scenes
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             mPlayer.Update(deltaTime);
             HandleKeyboardInput();
+            foreach (XP_Pickup xp in xpPickups)
+            {
+                if(xp.isCollected)
+                {
+                    continue;
+                }
+                if (mPlayer.mSourceRectangle.Intersects(xp.mCollisionRectangle))
+                {
+                    mPlayer.AddXP(xp.mXPAmount);
+                    xp.isCollected = true;
+                }
+            }
         }
 
         public void HandleKeyboardInput()

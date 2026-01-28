@@ -37,7 +37,7 @@ namespace MaskedSpirit.Objects
         Texture2D mMaskRight;
         float mCurrentXP = 0f;
         int mCurrentLevel = 1;
-        float mXPToNextLevel = 100f;
+        float mXPToNextLevel = 10f;
 
         public Player(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration) : base(pPosition, pIsGravityEnable, pAcceleration)
         {

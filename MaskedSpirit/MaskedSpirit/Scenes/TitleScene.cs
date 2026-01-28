@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using MaskedSpirit.Objects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SWGame;
 using SWGame.Input;
