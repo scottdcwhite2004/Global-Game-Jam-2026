@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MaskedSpirit.Objects;
+using MaskedSpirit.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +18,8 @@ namespace MaskedSpirit.Scenes
         private Player mPlayer;
         List<XP_Pickup> xpPickups = new List<XP_Pickup>();
         SpriteFont mDefaultFont;
+        List<Projectile> mProjectiles = new List<Projectile>();
+        Texture2D mProjectileSprite;
 
         public override void Draw(GameTime gameTime)
         {
@@ -33,6 +36,14 @@ namespace MaskedSpirit.Scenes
                 }
                 Core.SpriteBatch.Draw(xp.mTexture, xp.mCollisionRectangle, Color.White);
             }
+            foreach(Projectile p in mProjectiles)
+            {
+                if(!p.isActive)
+                {
+                    continue;
+                }
+                Core.SpriteBatch.Draw(p.mProjectileSprite, p.mCollisionRectangle, Color.White);
+            }
             Core.SpriteBatch.End();
 
             base.Draw(gameTime);
@@ -46,11 +57,12 @@ namespace MaskedSpirit.Scenes
               xpPickups.Add(new XP_Pickup(new Vector2(300, 150)));
             xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
             xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
-            mDefaultFont = Core.Content.Load<SpriteFont>("Default");
         }
 
         public override void LoadContent()
         {
+            mProjectileSprite = Content.Load<Texture2D>("Ink-Projectile");
+            mDefaultFont = Core.Content.Load<SpriteFont>("Default");
             base.LoadContent();
         }
 
@@ -70,6 +82,37 @@ namespace MaskedSpirit.Scenes
                 {
                     mPlayer.AddXP(xp.mXPAmount);
                     xp.isCollected = true;
+                }
+            }
+            foreach(Projectile p in mProjectiles)
+            {
+                if(!p.isActive)
+                {
+                    continue;
+                }
+                p.Update(deltaTime);
+            }
+            for (int i = 0; i < mPlayer.mEquippedWeapons.Length; i++)
+            {
+                Weapon w = mPlayer.mEquippedWeapons[i];
+                {
+                    if(w == null)
+                    {
+                        continue;
+                    }
+                    w.Update(deltaTime);
+                    if (w.canFire)
+                    {
+                        switch (w.type)
+                        {
+                            case WeaponType.INK:
+                                Projectile newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
+
+                        }
+                    }
                 }
             }
         }

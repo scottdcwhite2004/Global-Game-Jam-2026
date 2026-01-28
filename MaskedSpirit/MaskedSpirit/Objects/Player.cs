@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using MaskedSpirit.Weapons;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SWGame;
 using System;
@@ -38,6 +39,7 @@ namespace MaskedSpirit.Objects
         float mCurrentXP = 0f;
         int mCurrentLevel = 1;
         float mXPToNextLevel = 10f;
+        public Weapon[] mEquippedWeapons = new Weapon[4];
 
         public Player(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration) : base(pPosition, pIsGravityEnable, pAcceleration)
         {
@@ -46,6 +48,7 @@ namespace MaskedSpirit.Objects
             mMaskDown = Core.Content.Load<Texture2D>("Mask");
             mMaskLeft = Core.Content.Load<Texture2D>("Mask_Left");
             mMaskRight = Core.Content.Load<Texture2D>("Mask_Right");
+            mEquippedWeapons[0] = new InkWeapon();
         }
 
         public override void Update(float pDeltaTime)
@@ -53,6 +56,13 @@ namespace MaskedSpirit.Objects
             mSourceRectangle.Location = GetPosition().ToPoint();
             setMaskSprite();
             base.Update(pDeltaTime);
+            foreach(Weapon w in mEquippedWeapons)
+            {
+                if(w != null)
+                {
+                    w.Update(pDeltaTime);
+                }
+            }
         }
 
         public void ResetVelocity()
@@ -115,6 +125,23 @@ namespace MaskedSpirit.Objects
         public float GetCurrentXP()
         {
             return mCurrentXP;
+        }
+
+        public facingDirection GetFacingDirection()
+        {
+            return mFacingDirection;
+        }
+
+        public Vector2 GetForwardVector()
+        {
+            return mFacingDirection switch
+            {
+                facingDirection.UP => new Vector2(0, -1),
+                facingDirection.DOWN => new Vector2(0, 1),
+                facingDirection.LEFT => new Vector2(-1, 0),
+                facingDirection.RIGHT => new Vector2(1, 0),
+                _ => Vector2.Zero,
+            };
         }
 
     }

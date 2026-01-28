@@ -11,8 +11,13 @@ namespace MaskedSpirit.Objects
     internal class Projectile : PhysicsObject
     {
 
-        Rectangle mCollisionRectangle;
-        Texture2D mProjectileSprite;
+        public Rectangle mCollisionRectangle;
+        public Texture2D mProjectileSprite;
+        float lifetime = 2.0f;
+        float mSpeed = 500f;
+        float mDamage = 10f;
+        float timeAlive = 0f;
+        public bool isActive = true;
 
         public Projectile(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration, Texture2D pProjectileSprite) : base(pPosition, pIsGravityEnable, pAcceleration)
         {
@@ -22,6 +27,17 @@ namespace MaskedSpirit.Objects
 
         public override void Update(float pDeltaTime)
         {
+            SetPosition(GetPosition() + GetAcceleration() * pDeltaTime * mSpeed);
+            mCollisionRectangle.Location = GetPosition().ToPoint();
+            if (!isActive)
+            {
+                return;
+            }
+            timeAlive += pDeltaTime;
+            if(timeAlive >= lifetime)
+            {
+                isActive = false;
+            }
             base.Update(pDeltaTime);
         }
     }
