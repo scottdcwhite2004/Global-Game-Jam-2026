@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using MaskedSpirit.Objects;
@@ -22,15 +23,18 @@ namespace MaskedSpirit.Scenes
         List<Projectile> mProjectiles = new List<Projectile>();
         Texture2D mProjectileSprite;
         ProgressBar mXpBar;
-        ProgressBar mHealthBar;
+        public float secondsElapsed = 0f;
+        public int minutesElapsed = 0;
 
         public override void Draw(GameTime gameTime)
         {
             Core.GraphicsDevice.Clear(Color.CornflowerBlue);
             Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            Core.SpriteBatch.Draw(mPlayer.mCurrentMaskSprite, mPlayer.mSourceRectangle, Color.White);
-            Core.SpriteBatch.DrawString(mDefaultFont, "XP: " + mPlayer.GetCurrentXP().ToString(), new Vector2(10, 10), Color.White);
-            Core.SpriteBatch.DrawString(mDefaultFont, "Level: " + mPlayer.GetCurrentLevel().ToString(), new Vector2(10, 30), Color.White);
+            mPlayer.Draw(Core.SpriteBatch);
+            float textWidth = mDefaultFont.MeasureString("Level " + mPlayer.GetCurrentLevel().ToString()).X;
+            Core.SpriteBatch.DrawString(mDefaultFont, "Level " + mPlayer.GetCurrentLevel().ToString(), new Vector2(960 - textWidth/2, 30), Color.White);
+            string timerText = string.Format("{0}:{1:00}", minutesElapsed, (int)secondsElapsed);
+            Core.SpriteBatch.DrawString(mDefaultFont, timerText, new Vector2(10, 20), Color.White);
             foreach (XP_Pickup xp in xpPickups)
             {
                 if(xp.isCollected)
@@ -48,7 +52,6 @@ namespace MaskedSpirit.Scenes
                 Core.SpriteBatch.Draw(p.mProjectileSprite, p.mCollisionRectangle, Color.White);
             }
             mXpBar.Draw(Core.SpriteBatch);
-            mHealthBar.Draw(Core.SpriteBatch);
             Core.SpriteBatch.End();
 
             base.Draw(gameTime);
@@ -62,8 +65,7 @@ namespace MaskedSpirit.Scenes
               xpPickups.Add(new XP_Pickup(new Vector2(300, 150)));
             xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
             xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
-            mXpBar = new ProgressBar(new Rectangle(10, 50, 200, 20), Color.Green, Color.Black);
-            mHealthBar = new ProgressBar(new Rectangle(10, 80, 200, 20), Color.Red, Color.Black);
+            mXpBar = new ProgressBar(new Rectangle(10, 0, 1900, 30), Color.Green, Color.Black);
         }
 
         public override void LoadContent()
@@ -77,6 +79,7 @@ namespace MaskedSpirit.Scenes
         {
             base.Update(gameTime);
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Timer(gameTime);
             mPlayer.Update(deltaTime);
             HandleKeyboardInput();
             foreach (XP_Pickup xp in xpPickups)
@@ -149,6 +152,16 @@ namespace MaskedSpirit.Scenes
             {
                 mPlayer.move(new Vector2(mPlayer.GetVelocity().X, 1));
                 mPlayer.setFacingDirection(facingDirection.DOWN);
+            }
+        }
+
+        public void Timer(GameTime gameTime)
+        {
+            secondsElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (secondsElapsed >= 60f)
+            {
+                minutesElapsed++;
+                secondsElapsed = 0f;
             }
         }
 

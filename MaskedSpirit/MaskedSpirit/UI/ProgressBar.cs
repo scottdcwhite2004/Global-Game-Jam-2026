@@ -40,5 +40,10 @@ namespace MaskedSpirit.UI
             pSpriteBatch.Draw(mForegroundTexture, foregroundRect, mForegroundColor);
         }
 
+        public void UpdatePosition(Rectangle pNewPosition)
+        {
+            mPosition = pNewPosition;
+        }
+
     }
 }

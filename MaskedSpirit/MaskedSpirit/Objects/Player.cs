@@ -2,11 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SWGame;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MaskedSpirit.UI;
 
 namespace MaskedSpirit.Objects
 {
@@ -28,10 +24,12 @@ namespace MaskedSpirit.Objects
     internal class Player : PhysicsObject
     {
 
+        ProgressBar mHealthBar;
         facingDirection mFacingDirection = facingDirection.DOWN;
         float mSpeed = 5f;
         public Rectangle mSourceRectangle;
         public Texture2D mCurrentMaskSprite;
+        Rectangle mHealthBarRect;
         Texture2D mMaskUp;
         Texture2D mMaskDown;
         Texture2D mMaskLeft;
@@ -41,6 +39,9 @@ namespace MaskedSpirit.Objects
         float mXPToNextLevel = 10f;
         float mLevelProgress;
         public Weapon[] mEquippedWeapons = new Weapon[4];
+        float mMaxHealth = 100f;
+        float mCurrentHealth = 100f;
+
 
         public Player(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration) : base(pPosition, pIsGravityEnable, pAcceleration)
         {
@@ -51,11 +52,16 @@ namespace MaskedSpirit.Objects
             mMaskRight = Core.Content.Load<Texture2D>("Mask_Right");
             mEquippedWeapons[0] = new InkWeapon();
             mLevelProgress = mCurrentXP / mXPToNextLevel;
+            mHealthBarRect = new Rectangle(mSourceRectangle.X, mSourceRectangle.Y - 12, 61, 10);
+            mHealthBar = new ProgressBar(mHealthBarRect, Color.Red, Color.Black);
+            mHealthBar.SetProgress(mCurrentHealth / mMaxHealth);
         }
 
         public override void Update(float pDeltaTime)
         {
             mSourceRectangle.Location = GetPosition().ToPoint();
+            mHealthBarRect.Location = new Point(mSourceRectangle.X, mSourceRectangle.Y - 12);
+            mHealthBar.UpdatePosition(mHealthBarRect);
             setMaskSprite();
             base.Update(pDeltaTime);
             foreach(Weapon w in mEquippedWeapons)
@@ -150,6 +156,12 @@ namespace MaskedSpirit.Objects
         public float GetLevelProgress()
         {
             return mLevelProgress;
+        }
+
+        public void Draw(SpriteBatch pSpriteBatch)
+        {
+            pSpriteBatch.Draw(mCurrentMaskSprite, mSourceRectangle, Color.White);
+            mHealthBar.Draw(pSpriteBatch);
         }
 
     }
