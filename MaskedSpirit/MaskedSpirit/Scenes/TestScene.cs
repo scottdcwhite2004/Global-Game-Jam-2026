@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MaskedSpirit.Objects;
+using MaskedSpirit.UI;
 using MaskedSpirit.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -20,6 +21,8 @@ namespace MaskedSpirit.Scenes
         SpriteFont mDefaultFont;
         List<Projectile> mProjectiles = new List<Projectile>();
         Texture2D mProjectileSprite;
+        ProgressBar mXpBar;
+        ProgressBar mHealthBar;
 
         public override void Draw(GameTime gameTime)
         {
@@ -44,6 +47,8 @@ namespace MaskedSpirit.Scenes
                 }
                 Core.SpriteBatch.Draw(p.mProjectileSprite, p.mCollisionRectangle, Color.White);
             }
+            mXpBar.Draw(Core.SpriteBatch);
+            mHealthBar.Draw(Core.SpriteBatch);
             Core.SpriteBatch.End();
 
             base.Draw(gameTime);
@@ -57,6 +62,8 @@ namespace MaskedSpirit.Scenes
               xpPickups.Add(new XP_Pickup(new Vector2(300, 150)));
             xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
             xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
+            mXpBar = new ProgressBar(new Rectangle(10, 50, 200, 20), Color.Green, Color.Black);
+            mHealthBar = new ProgressBar(new Rectangle(10, 80, 200, 20), Color.Red, Color.Black);
         }
 
         public override void LoadContent()
@@ -82,6 +89,7 @@ namespace MaskedSpirit.Scenes
                 {
                     mPlayer.AddXP(xp.mXPAmount);
                     xp.isCollected = true;
+                    mXpBar.SetProgress(mPlayer.GetLevelProgress());
                 }
             }
             foreach(Projectile p in mProjectiles)

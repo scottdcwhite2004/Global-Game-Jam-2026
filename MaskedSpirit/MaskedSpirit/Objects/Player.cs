@@ -39,6 +39,7 @@ namespace MaskedSpirit.Objects
         float mCurrentXP = 0f;
         int mCurrentLevel = 1;
         float mXPToNextLevel = 10f;
+        float mLevelProgress;
         public Weapon[] mEquippedWeapons = new Weapon[4];
 
         public Player(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration) : base(pPosition, pIsGravityEnable, pAcceleration)
@@ -49,6 +50,7 @@ namespace MaskedSpirit.Objects
             mMaskLeft = Core.Content.Load<Texture2D>("Mask_Left");
             mMaskRight = Core.Content.Load<Texture2D>("Mask_Right");
             mEquippedWeapons[0] = new InkWeapon();
+            mLevelProgress = mCurrentXP / mXPToNextLevel;
         }
 
         public override void Update(float pDeltaTime)
@@ -103,6 +105,7 @@ namespace MaskedSpirit.Objects
         public void AddXP(float pXPAmount)
         {
             mCurrentXP += pXPAmount;
+            mLevelProgress = mCurrentXP / mXPToNextLevel;
             if (mCurrentXP >= mXPToNextLevel)
             {
                 LevelUp();
@@ -113,8 +116,8 @@ namespace MaskedSpirit.Objects
         {
             mCurrentLevel++;
             mCurrentXP = mCurrentXP - mXPToNextLevel;
-            mXPToNextLevel *= 1.5f; // Increase XP needed for next level
-            // Additional level-up logic (e.g., increase stats) can be added here
+            mXPToNextLevel *= 1.5f;
+            mLevelProgress = mCurrentXP / mXPToNextLevel;
         }
 
         public int GetCurrentLevel()
@@ -142,6 +145,11 @@ namespace MaskedSpirit.Objects
                 facingDirection.RIGHT => new Vector2(1, 0),
                 _ => Vector2.Zero,
             };
+        }
+
+        public float GetLevelProgress()
+        {
+            return mLevelProgress;
         }
 
     }

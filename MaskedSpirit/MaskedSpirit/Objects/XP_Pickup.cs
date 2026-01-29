@@ -12,7 +12,7 @@ namespace MaskedSpirit.Objects
     internal class XP_Pickup : GameObject
     {
         
-        public float mXPAmount = 10f;
+        public float mXPAmount = 2f;
         public Rectangle mCollisionRectangle;
         public Texture2D mTexture;
         public bool isCollected = false;
