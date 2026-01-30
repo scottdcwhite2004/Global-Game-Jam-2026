@@ -22,7 +22,6 @@ namespace MaskedSpirit.Scenes
         List<XP_Pickup> xpPickups = new List<XP_Pickup>();
         SpriteFont mDefaultFont;
         List<Projectile> mProjectiles = new List<Projectile>();
-        List<Enemy> mEnemies = new List<Enemy>();
         Texture2D mInkProjectileSprite;
         Texture2D mGobletProjectileSprite;
         Texture2D mCandleProjectileSprite;
@@ -32,6 +31,7 @@ namespace MaskedSpirit.Scenes
         ProgressBar mXpBar;
         public float secondsElapsed = 0f;
         public int minutesElapsed = 0;
+        EnemySpawner mSpawner = new EnemySpawner();
 
         public override void Draw(GameTime gameTime)
         {
@@ -58,7 +58,7 @@ namespace MaskedSpirit.Scenes
                 }
                 Core.SpriteBatch.Draw(p.mProjectileSprite, p.mCollisionRectangle, Color.White);
             }
-            foreach (Enemy e in mEnemies)
+            foreach (Enemy e in mSpawner.GetEnemies())
             {
                 if(!e.isAlive)
                 {
@@ -75,13 +75,13 @@ namespace MaskedSpirit.Scenes
         public override void Initialize()
         {
             base.Initialize();
+            mSpawner.OnEnemyDeathDropXP = (Vector2 pos) =>
+            {
+                xpPickups.Add(new XP_Pickup(pos));
+            };
             mPlayer = new Player(new Vector2(100, 100), false, Vector2.Zero);
-           xpPickups.Add(new XP_Pickup(new Vector2(200, 200)));
-              xpPickups.Add(new XP_Pickup(new Vector2(300, 150)));
-            xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
-            xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
             mXpBar = new ProgressBar(new Rectangle(10, 0, 1900, 30), Color.Green, Color.Black);
-            mEnemies.Add(new CoatStandEnemy(new Rectangle(10,10,32,32)));
+
         }
 
         public override void LoadContent()
@@ -100,6 +100,7 @@ namespace MaskedSpirit.Scenes
         {
             base.Update(gameTime);
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            mSpawner.Update(deltaTime, mPlayer.mPosition);
             Timer(gameTime);
             mPlayer.Update(deltaTime);
             HandleKeyboardInput();
@@ -124,9 +125,8 @@ namespace MaskedSpirit.Scenes
                 }
                 p.Update(deltaTime);
             }
-            foreach(Enemy e in mEnemies)
+            foreach(Enemy e in mSpawner.GetEnemies())
             {
-                e.Update(deltaTime, mPlayer.mPosition);
                 foreach (Projectile p in mProjectiles)
                 {
                     if (!p.isActive)
@@ -168,7 +168,7 @@ namespace MaskedSpirit.Scenes
                                 break;
                             case WeaponType.ROSE:
                                 // Implement Rose firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mRoseProjectileSprite, 1.5f, w.GetDamage(), 100.0f);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mRoseProjectileSprite, 1.5f, /*w.GetDamage()*/100.0f, 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;

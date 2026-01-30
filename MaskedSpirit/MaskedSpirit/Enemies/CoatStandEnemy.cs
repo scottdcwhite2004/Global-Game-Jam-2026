@@ -11,6 +11,9 @@ namespace MaskedSpirit.Enemies
     {
         public CoatStandEnemy(Rectangle pCollisionRectangle) : base(pCollisionRectangle)
         {
+            mDamage = 10.0f;
+            mMovementSpeed = 50.0f;
+            mMaxHealth = 25.0f;
         }
 
         public override void Update(float pDeltaTime, Vector2 p)
