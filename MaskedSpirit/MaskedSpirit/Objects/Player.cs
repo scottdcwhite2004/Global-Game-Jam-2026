@@ -50,7 +50,7 @@ namespace MaskedSpirit.Objects
             mMaskDown = Core.Content.Load<Texture2D>("Mask");
             mMaskLeft = Core.Content.Load<Texture2D>("Mask_Left");
             mMaskRight = Core.Content.Load<Texture2D>("Mask_Right");
-            mEquippedWeapons[0] = new InkWeapon();
+            mEquippedWeapons[0] = new RoseWeapon();
             mLevelProgress = mCurrentXP / mXPToNextLevel;
             mHealthBarRect = new Rectangle(mSourceRectangle.X, mSourceRectangle.Y - 12, 61, 10);
             mHealthBar = new ProgressBar(mHealthBarRect, Color.Red, Color.Black);

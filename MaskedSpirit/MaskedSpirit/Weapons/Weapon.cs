@@ -9,7 +9,11 @@ namespace MaskedSpirit.Weapons
     enum WeaponType
     {
         INK,
-        FIRE
+        CANDLE,
+        GOBLET,
+        ROSE,
+        SKULL,
+        SWORD
     }
 
 

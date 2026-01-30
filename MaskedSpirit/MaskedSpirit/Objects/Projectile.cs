@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using MaskedSpirit.Enemies;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -19,10 +20,13 @@ namespace MaskedSpirit.Objects
         float timeAlive = 0f;
         public bool isActive = true;
 
-        public Projectile(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration, Texture2D pProjectileSprite) : base(pPosition, pIsGravityEnable, pAcceleration)
+        public Projectile(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration, Texture2D pProjectileSprite, float pLifetime, float pDamage, float pSpeed) : base(pPosition, pIsGravityEnable, pAcceleration)
         {
             mProjectileSprite = pProjectileSprite;
             mCollisionRectangle = new Rectangle((int)pPosition.X, (int)pPosition.Y, mProjectileSprite.Width, mProjectileSprite.Height);
+            lifetime = pLifetime;
+            mDamage = pDamage;
+            mSpeed = pSpeed;
         }
 
         public override void Update(float pDeltaTime)
@@ -39,6 +43,15 @@ namespace MaskedSpirit.Objects
                 isActive = false;
             }
             base.Update(pDeltaTime);
+        }
+
+        public void EnemyCollisionCheck(Enemy pEnemy)
+        {
+            if(pEnemy.isColliding(mCollisionRectangle))
+            {
+                pEnemy.TakeDamage(mDamage);
+                isActive = false;
+            }
         }
     }
 }

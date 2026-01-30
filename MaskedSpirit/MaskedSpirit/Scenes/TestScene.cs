@@ -21,7 +21,12 @@ namespace MaskedSpirit.Scenes
         List<XP_Pickup> xpPickups = new List<XP_Pickup>();
         SpriteFont mDefaultFont;
         List<Projectile> mProjectiles = new List<Projectile>();
-        Texture2D mProjectileSprite;
+        Texture2D mInkProjectileSprite;
+        Texture2D mGobletProjectileSprite;
+        Texture2D mCandleProjectileSprite;
+        Texture2D mRoseProjectileSprite;
+        Texture2D mSwordProjectileSprite;
+        Texture2D mSkullProjectileSprite;
         ProgressBar mXpBar;
         public float secondsElapsed = 0f;
         public int minutesElapsed = 0;
@@ -70,7 +75,12 @@ namespace MaskedSpirit.Scenes
 
         public override void LoadContent()
         {
-            mProjectileSprite = Content.Load<Texture2D>("Ink-Projectile");
+            mInkProjectileSprite = Core.Content.Load<Texture2D>("Ink-Projectile");
+            mGobletProjectileSprite = Core.Content.Load<Texture2D>("Goblet-Projectile");
+            mCandleProjectileSprite = Core.Content.Load<Texture2D>("Candle-Projectile");
+            mRoseProjectileSprite = Core.Content.Load<Texture2D>("Rose-Projectile");
+            mSwordProjectileSprite = Core.Content.Load<Texture2D>("Sword-Projectile");
+            mSkullProjectileSprite = Core.Content.Load<Texture2D>("Skull-Projectile");
             mDefaultFont = Core.Content.Load<SpriteFont>("Default");
             base.LoadContent();
         }
@@ -117,11 +127,40 @@ namespace MaskedSpirit.Scenes
                         switch (w.type)
                         {
                             case WeaponType.INK:
-                                Projectile newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mProjectileSprite);
+                                Projectile newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mInkProjectileSprite);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
-
+                            case WeaponType.GOBLET:
+                                // Implement Goblet firing logic
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mGobletProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
+                            case WeaponType.CANDLE:
+                                // Implement Candle firing logic
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mCandleProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
+                            case WeaponType.ROSE:
+                                // Implement Rose firing logic
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mRoseProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
+                            case WeaponType.SKULL:
+                                // Implement Skull firing logic
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSkullProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
+                            case WeaponType.SWORD:
+                                // Implement Sword firing logic
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSwordProjectileSprite);
+                                mProjectiles.Add(newProjectile);
+                                w.canFire = false;
+                                break;
                         }
                     }
                 }
