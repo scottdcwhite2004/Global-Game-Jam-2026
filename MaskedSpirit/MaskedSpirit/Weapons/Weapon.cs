@@ -52,5 +52,10 @@ namespace MaskedSpirit.Weapons
             timeSinceLastShot = 0f;
         }
 
+        public float GetDamage()
+        {
+            return mDamage;
+        }
+
     }
 }

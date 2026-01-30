@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using MaskedSpirit.Enemies;
 using MaskedSpirit.Objects;
 using MaskedSpirit.UI;
 using MaskedSpirit.Weapons;
@@ -21,6 +22,7 @@ namespace MaskedSpirit.Scenes
         List<XP_Pickup> xpPickups = new List<XP_Pickup>();
         SpriteFont mDefaultFont;
         List<Projectile> mProjectiles = new List<Projectile>();
+        List<Enemy> mEnemies = new List<Enemy>();
         Texture2D mInkProjectileSprite;
         Texture2D mGobletProjectileSprite;
         Texture2D mCandleProjectileSprite;
@@ -56,6 +58,14 @@ namespace MaskedSpirit.Scenes
                 }
                 Core.SpriteBatch.Draw(p.mProjectileSprite, p.mCollisionRectangle, Color.White);
             }
+            foreach (Enemy e in mEnemies)
+            {
+                if(!e.isAlive)
+                {
+                    continue;
+                }
+                Core.SpriteBatch.Draw(mSkullProjectileSprite, e.getRectangle(), e.mSpriteColor);
+            }
             mXpBar.Draw(Core.SpriteBatch);
             Core.SpriteBatch.End();
 
@@ -71,6 +81,7 @@ namespace MaskedSpirit.Scenes
             xpPickups.Add(new XP_Pickup(new Vector2(400, 250)));
             xpPickups.Add(new XP_Pickup(new Vector2(500, 300)));
             mXpBar = new ProgressBar(new Rectangle(10, 0, 1900, 30), Color.Green, Color.Black);
+            mEnemies.Add(new CoatStandEnemy(new Rectangle(10,10,32,32)));
         }
 
         public override void LoadContent()
@@ -113,6 +124,18 @@ namespace MaskedSpirit.Scenes
                 }
                 p.Update(deltaTime);
             }
+            foreach(Enemy e in mEnemies)
+            {
+                e.Update(deltaTime, mPlayer.mPosition);
+                foreach (Projectile p in mProjectiles)
+                {
+                    if (!p.isActive)
+                    {
+                        continue;
+                    }
+                    p.EnemyCollisionCheck(e);
+                }
+            }
             for (int i = 0; i < mPlayer.mEquippedWeapons.Length; i++)
             {
                 Weapon w = mPlayer.mEquippedWeapons[i];
@@ -127,37 +150,37 @@ namespace MaskedSpirit.Scenes
                         switch (w.type)
                         {
                             case WeaponType.INK:
-                                Projectile newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mInkProjectileSprite);
+                                Projectile newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mInkProjectileSprite, 2.0f, w.GetDamage(),100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
                             case WeaponType.GOBLET:
                                 // Implement Goblet firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mGobletProjectileSprite);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mGobletProjectileSprite, 5.0f, w.GetDamage(), 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
                             case WeaponType.CANDLE:
                                 // Implement Candle firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mCandleProjectileSprite);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mCandleProjectileSprite, 3.0f, w.GetDamage(), 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
                             case WeaponType.ROSE:
                                 // Implement Rose firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mRoseProjectileSprite);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mRoseProjectileSprite, 1.5f, w.GetDamage(), 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
                             case WeaponType.SKULL:
                                 // Implement Skull firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSkullProjectileSprite);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSkullProjectileSprite, 4.0f, w.GetDamage(), 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;
                             case WeaponType.SWORD:
                                 // Implement Sword firing logic
-                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSwordProjectileSprite);
+                                newProjectile = new Projectile(mPlayer.mPosition, false, mPlayer.GetForwardVector(), mSwordProjectileSprite, 1.0f, w.GetDamage(), 100.0f);
                                 mProjectiles.Add(newProjectile);
                                 w.canFire = false;
                                 break;

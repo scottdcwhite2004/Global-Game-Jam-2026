@@ -14,7 +14,7 @@ namespace MaskedSpirit.Enemies
         float mCurrentHealth;
         protected float mMovementSpeed = 2f;
         protected float mDamage = 10f;
-        Color mSpriteColor = Color.White;
+        public Color mSpriteColor = Color.White;
         public bool isAlive = true;
         float mDamageCooldown = 1.0f;
         float mTimeSinceLastDamage = 0f;
@@ -30,7 +30,7 @@ namespace MaskedSpirit.Enemies
             return mCollisionRectangle.Intersects(pOtherRectangle);
         }
 
-        public virtual void Update(float pDeltaTime)
+        public virtual void Update(float pDeltaTime, Vector2 playerPosition)
         {
             // Basic enemy logic can be implemented here
             mTimeSinceLastDamage += pDeltaTime;
@@ -39,6 +39,7 @@ namespace MaskedSpirit.Enemies
                 // Reset color after damage flash
                 mSpriteColor = Color.White;
             }
+            steerTowards(playerPosition, pDeltaTime);
         }
 
         public void TakeDamage(float pDamage)
@@ -58,6 +59,28 @@ namespace MaskedSpirit.Enemies
         {
             isAlive = false;
             // Additional death logic can be implemented here
+        }
+
+        public void steerTowards(Vector2 pTargetPosition, float pDeltaTime)
+        {
+            Vector2 direction = pTargetPosition - new Vector2(mCollisionRectangle.X, mCollisionRectangle.Y);
+            if (direction != Vector2.Zero)
+            {
+                direction.Normalize();
+                Vector2 movement = direction * mMovementSpeed * pDeltaTime;
+                mCollisionRectangle.X += (int)movement.X;
+                mCollisionRectangle.Y += (int)movement.Y;
+            }
+        }
+
+        public bool GetIsAlive()
+        {
+            return isAlive;
+        }
+
+        public Rectangle getRectangle()
+        {
+            return mCollisionRectangle;
         }
     }
 }

@@ -13,9 +13,9 @@ namespace MaskedSpirit.Enemies
         {
         }
 
-        public override void Update(float pDeltaTime)
+        public override void Update(float pDeltaTime, Vector2 p)
         {
-            base.Update(pDeltaTime);
+            base.Update(pDeltaTime,p);
         }
     }
 }
