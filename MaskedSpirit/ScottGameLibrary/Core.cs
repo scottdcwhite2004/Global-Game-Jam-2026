@@ -181,6 +181,7 @@ namespace ScottGameLibrary
             }
         }
 
+
         private static void TransitionScene()
         {
             // If there is an active scene, dispose of it.
