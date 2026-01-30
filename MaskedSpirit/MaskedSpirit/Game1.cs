@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using SWGame;
+using ScottGameLibrary;
 using MaskedSpirit.Scenes;
 
 namespace MaskedSpirit

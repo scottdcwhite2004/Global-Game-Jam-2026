@@ -1,7 +1,7 @@
 ﻿using MaskedSpirit.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SWGame;
+using ScottGameLibrary;
 using MaskedSpirit.UI;
 
 namespace MaskedSpirit.Objects

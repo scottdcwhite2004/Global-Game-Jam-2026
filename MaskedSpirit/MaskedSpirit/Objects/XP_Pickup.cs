@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SWGame;
+using ScottGameLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;

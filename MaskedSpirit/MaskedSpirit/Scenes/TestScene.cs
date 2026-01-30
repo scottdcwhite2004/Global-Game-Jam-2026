@@ -10,8 +10,8 @@ using MaskedSpirit.Weapons;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SWGame;
-using SWGame.Scenes;
+using ScottGameLibrary;
+using ScottGameLibrary.Scenes;
 
 namespace MaskedSpirit.Scenes
 {

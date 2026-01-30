@@ -1,9 +1,9 @@
 ﻿using MaskedSpirit.Objects;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SWGame;
-using SWGame.Input;
-using SWGame.Scenes;
+using ScottGameLibrary;
+using ScottGameLibrary.Scenes;
+using ScottGameLibrary.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
