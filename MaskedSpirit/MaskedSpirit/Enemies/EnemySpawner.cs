@@ -10,7 +10,7 @@ namespace MaskedSpirit.Enemies
     internal class EnemySpawner
     {
         public Action<Vector2> OnEnemyDeathDropXP;
-        float mSpawnInterval = 3.0f;
+        float mSpawnInterval = 10.0f;
         float mTimeSinceLastSpawn = 0f;
         List<Enemy> mEnemies;
         List<Enemy> mPreviousDeadEnemies;

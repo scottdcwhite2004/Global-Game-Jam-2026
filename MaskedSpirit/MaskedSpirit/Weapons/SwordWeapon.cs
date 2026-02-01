@@ -11,8 +11,8 @@ namespace MaskedSpirit.Weapons
         public SwordWeapon()
         {
 
-            mDamage = 2.5f;
-            fireRate = 1.5f;
+            mDamage = 15.0f;
+            fireRate = 1.0f;
             type = WeaponType.SWORD;
         }
 

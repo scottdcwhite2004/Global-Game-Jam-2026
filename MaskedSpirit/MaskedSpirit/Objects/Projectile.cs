@@ -49,7 +49,7 @@ namespace MaskedSpirit.Objects
         {
             if(pEnemy.isColliding(mCollisionRectangle))
             {
-                pEnemy.TakeDamage(mDamage);
+                pEnemy.TakeDamage(mDamage, true);
                 isActive = false;
             }
         }

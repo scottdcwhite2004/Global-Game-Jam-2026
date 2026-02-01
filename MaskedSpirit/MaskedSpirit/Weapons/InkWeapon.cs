@@ -11,7 +11,7 @@ namespace MaskedSpirit.Weapons
         
         public InkWeapon()
         {
-            mDamage = 10.0f;
+            mDamage = 30.0f;
             fireRate = 5.0f;
             type = WeaponType.INK;
         }

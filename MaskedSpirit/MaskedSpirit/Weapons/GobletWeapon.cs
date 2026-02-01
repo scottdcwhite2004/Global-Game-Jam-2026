@@ -11,7 +11,7 @@ namespace MaskedSpirit.Weapons
         public GobletWeapon()
         {
 
-            mDamage = 50;
+            mDamage = 50.0f;
             fireRate = 10.0f;
             type = WeaponType.GOBLET;
         

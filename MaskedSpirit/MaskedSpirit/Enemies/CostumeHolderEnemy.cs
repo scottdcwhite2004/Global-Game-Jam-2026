@@ -15,6 +15,7 @@ namespace MaskedSpirit.Enemies
             mDamage = 15f;
             mMovementSpeed = 25.0f;
             mMaxHealth = 50.0f;
+            mEnemyType = EnemyType.CostumeHolder;
 
         }
 

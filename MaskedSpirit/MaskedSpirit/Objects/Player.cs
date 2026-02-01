@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ScottGameLibrary;
 using MaskedSpirit.UI;
+using System;
+using MaskedSpirit.Enemies;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MaskedSpirit.Objects
 {
@@ -34,13 +38,20 @@ namespace MaskedSpirit.Objects
         Texture2D mMaskDown;
         Texture2D mMaskLeft;
         Texture2D mMaskRight;
+        public Color mColor;
         float mCurrentXP = 0f;
         int mCurrentLevel = 1;
         float mXPToNextLevel = 10f;
         float mLevelProgress;
-        public Weapon[] mEquippedWeapons = new Weapon[4];
+        public Weapon mEquippedWeapon;
         float mMaxHealth = 100f;
         float mCurrentHealth = 100f;
+        float mDamageCooldown = 1.0f;
+        float mTimeSinceLastDamage = 0f;
+        bool isAlive = true;
+        private Dictionary<Enemy, float> mEnemyDamageTimers = new();
+
+
 
 
         public Player(Vector2 pPosition, bool pIsGravityEnable, Vector2 pAcceleration) : base(pPosition, pIsGravityEnable, pAcceleration)
@@ -50,11 +61,23 @@ namespace MaskedSpirit.Objects
             mMaskDown = Core.Content.Load<Texture2D>("Mask");
             mMaskLeft = Core.Content.Load<Texture2D>("Mask_Left");
             mMaskRight = Core.Content.Load<Texture2D>("Mask_Right");
-            mEquippedWeapons[0] = new RoseWeapon();
+            var weaponConstructors = new Func<Weapon>[]
+{
+        () => new RoseWeapon(),
+        () => new InkWeapon(),
+        () => new GobletWeapon(),
+        () => new CandleWeapon(),
+        () => new SkullWeapon(),
+        () => new SwordWeapon()
+};
+            var rng = new Random();
+            int index = rng.Next(weaponConstructors.Length);
+            mEquippedWeapon = weaponConstructors[index]();
             mLevelProgress = mCurrentXP / mXPToNextLevel;
             mHealthBarRect = new Rectangle(mSourceRectangle.X, mSourceRectangle.Y - 12, 61, 10);
             mHealthBar = new ProgressBar(mHealthBarRect, Color.Red, Color.Black);
             mHealthBar.SetProgress(mCurrentHealth / mMaxHealth);
+            mColor = Color.White;
         }
 
         public override void Update(float pDeltaTime)
@@ -63,13 +86,17 @@ namespace MaskedSpirit.Objects
             mHealthBarRect.Location = new Point(mSourceRectangle.X, mSourceRectangle.Y - 12);
             mHealthBar.UpdatePosition(mHealthBarRect);
             setMaskSprite();
-            base.Update(pDeltaTime);
-            foreach(Weapon w in mEquippedWeapons)
+            var keys = mEnemyDamageTimers.Keys.ToList();
+            foreach (var enemy in keys)
             {
-                if(w != null)
-                {
-                    w.Update(pDeltaTime);
-                }
+                mEnemyDamageTimers[enemy] += pDeltaTime;
+            }
+            mTimeSinceLastDamage += pDeltaTime;
+            base.Update(pDeltaTime);
+            mEquippedWeapon.Update(pDeltaTime);
+            if (mColor == Color.Red && mTimeSinceLastDamage >= mDamageCooldown)
+            {
+                mColor = Color.White;
             }
         }
 
@@ -115,6 +142,7 @@ namespace MaskedSpirit.Objects
             if (mCurrentXP >= mXPToNextLevel)
             {
                 LevelUp();
+                mEquippedWeapon.LevelUp();
             }
         }
 
@@ -124,6 +152,11 @@ namespace MaskedSpirit.Objects
             mCurrentXP = mCurrentXP - mXPToNextLevel;
             mXPToNextLevel *= 1.5f;
             mLevelProgress = mCurrentXP / mXPToNextLevel;
+            if(mCurrentLevel % 5 == 0)
+            {
+                mMaxHealth += 20f;
+                mCurrentHealth = mMaxHealth;
+            }
         }
 
         public int GetCurrentLevel()
@@ -160,8 +193,38 @@ namespace MaskedSpirit.Objects
 
         public void Draw(SpriteBatch pSpriteBatch)
         {
-            pSpriteBatch.Draw(mCurrentMaskSprite, mSourceRectangle, Color.White);
+            pSpriteBatch.Draw(mCurrentMaskSprite, mSourceRectangle, mColor);
             mHealthBar.Draw(pSpriteBatch);
+        }
+
+        public void takeDamage(float pDamage)
+        {
+            mCurrentHealth -= pDamage;
+            mColor = Color.Red;
+            if (mCurrentHealth <= 0)
+            {
+                mCurrentHealth = 0;
+                isAlive = false;
+            }
+            mHealthBar.SetProgress(mCurrentHealth / mMaxHealth);
+            mTimeSinceLastDamage = 0f;
+        }
+
+        public void enemyCollisionCheck(Enemy enemy)
+        {
+            if (mSourceRectangle.Intersects(enemy.getRectangle()))
+            {
+                if (!mEnemyDamageTimers.ContainsKey(enemy) || mEnemyDamageTimers[enemy] >= mDamageCooldown)
+                {
+                    takeDamage(enemy.GetDamage());
+                    mEnemyDamageTimers[enemy] = 0f;
+                }
+            }
+        }
+
+        public bool isPlayerAlive()
+        {
+            return isAlive;
         }
 
     }

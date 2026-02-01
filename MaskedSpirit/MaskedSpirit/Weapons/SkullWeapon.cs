@@ -11,7 +11,7 @@ namespace MaskedSpirit.Weapons
         public SkullWeapon()
         {
 
-            mDamage = 5.0f;
+            mDamage = 20.0f;
             fireRate = 2.0f;
             type = WeaponType.SKULL;
         }

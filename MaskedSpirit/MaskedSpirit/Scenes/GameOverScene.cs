@@ -7,31 +7,36 @@ using Gum.Forms.Controls;
 using MonoGameGum.GueDeriving;
 using System;
 
-
 namespace MaskedSpirit.Scenes
 {
-    internal class TitleScene : Scene
+    internal class GameOverScene : Scene
     {
-    
+
+
         private Texture2D mTitleImage;
         private Panel _titleScreenButtonsPanel;
-        private Texture2D mLogoImage;
+        int mMinutesSurvived;
+        int mSecondsSurvived;
         SpriteFont mFont;
-        Rectangle mTitleArea;
 
+        public GameOverScene(int minutesSurvived, int secondsSurvived)
+        {
+            mMinutesSurvived = minutesSurvived;
+            mSecondsSurvived = secondsSurvived;
+        }
 
         public override void Draw(GameTime gameTime)
         {
             Core.GraphicsDevice.Clear(Color.Black);
-            Core.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            Core.SpriteBatch.Begin();
             Core.SpriteBatch.Draw(mTitleImage, new Rectangle(0, 0, Core.GraphicsDevice.Viewport.Width, Core.GraphicsDevice.Viewport.Height), Color.White);
-            if(_titleScreenButtonsPanel.IsVisible)
+            if (_titleScreenButtonsPanel.IsVisible)
             {
 
 
 
             }
-            Core.SpriteBatch.Draw(mLogoImage, mTitleArea, Color.White);
+            Core.SpriteBatch.DrawString(mFont, $"You Survived: {mMinutesSurvived} Minutes and {mSecondsSurvived} Seconds", new Vector2(300, 350), Color.White);
             Core.SpriteBatch.End();
             GumService.Default.Draw();
             base.Draw(gameTime);
@@ -40,7 +45,6 @@ namespace MaskedSpirit.Scenes
         public override void Initialize()
         {
             base.Initialize();
-            mTitleArea = new Rectangle(240, 200, 1536, 96);
             InitializeUI();
         }
 
@@ -48,7 +52,6 @@ namespace MaskedSpirit.Scenes
         {
             mTitleImage = Content.Load<Texture2D>("TitleScreenBackground");
             mFont = Content.Load<SpriteFont>("Default");
-            mLogoImage = Content.Load<Texture2D>("TitleSign");
             base.LoadContent();
         }
 
@@ -65,32 +68,19 @@ namespace MaskedSpirit.Scenes
             _titleScreenButtonsPanel.AddToRoot();
 
             var startButton = new Button();
-            startButton.Anchor(Gum.Wireframe.Anchor.BottomLeft);
-            startButton.X = 50;
-            startButton.Y = -12;
-            startButton.Width = 70;
-            startButton.Text = "Start";
+            startButton.Anchor(Gum.Wireframe.Anchor.Bottom);
+            startButton.X = 0;
+            startButton.Y = -50;
+            startButton.Width = 300;
+            startButton.Text = "Return To Main Menu";
             startButton.Click += HandleStartClicked;
             _titleScreenButtonsPanel.AddChild(startButton);
 
-            var exitButton = new Button();
-            exitButton.Anchor(Gum.Wireframe.Anchor.BottomRight);
-            exitButton.X = -50;
-            exitButton.Y = -12;
-            exitButton.Width = 70;
-            exitButton.Text = "Exit";
-            exitButton.Click += HandleExitClicked;
-            _titleScreenButtonsPanel.AddChild(exitButton);
         }
 
         private void HandleStartClicked(object sender, EventArgs e)
         {
-            Core.ChangeScene(new TestScene());
-        }
-
-        private void HandleExitClicked(object sender, EventArgs e)
-        {
-            Core.Instance.Exit();
+            Core.ChangeScene(new TitleScene());
         }
 
         private void InitializeUI()
@@ -98,5 +88,6 @@ namespace MaskedSpirit.Scenes
             GumService.Default.Root.Children.Clear();
             CreateTitlePanel();
         }
+
     }
 }

@@ -7,18 +7,26 @@ using Microsoft.Xna.Framework;
 
 namespace MaskedSpirit.Enemies
 {
+    
+    enum EnemyType
+    {
+        CoatStand,
+        CostumeHolder
+    }
+
     internal class Enemy
     {
         Rectangle mCollisionRectangle;
         protected float mMaxHealth = 100f;
         float mCurrentHealth;
-        protected float mMovementSpeed = 2f;
+        protected float mMovementSpeed = 1f;
         protected float mDamage = 10f;
         public Color mSpriteColor = Color.White;
         public bool isAlive = true;
         float mDamageCooldown = 1.0f;
         float mTimeSinceLastDamage = 0f;
         private Vector2 mPosition;
+        protected EnemyType mEnemyType;
 
         public Enemy(Rectangle pCollisionRectangle)
         {
@@ -34,24 +42,25 @@ namespace MaskedSpirit.Enemies
 
         public virtual void Update(float pDeltaTime, Vector2 playerPosition)
         {
-            // Basic enemy logic can be implemented here
-            mTimeSinceLastDamage += pDeltaTime;
-            if(mSpriteColor == Color.Red)
+            if (isAlive)
             {
-                // Reset color after damage flash
-                mSpriteColor = Color.White;
+                mTimeSinceLastDamage += pDeltaTime;
+                if (mSpriteColor == Color.Red && mTimeSinceLastDamage >= mDamageCooldown)
+                {
+                    mSpriteColor = Color.White;
+                }
+                steerTowards(playerPosition, pDeltaTime);
             }
-            steerTowards(playerPosition, pDeltaTime);
         }
 
-        public void TakeDamage(float pDamage)
+        public void TakeDamage(float pDamage, bool ignoreCooldown)
         {
-            if(mTimeSinceLastDamage < mDamageCooldown)
+            if (!ignoreCooldown && mTimeSinceLastDamage < mDamageCooldown)
             {
-                return; // Still in cooldown, ignore damage
+                return;
             }
             mCurrentHealth -= pDamage;
-            mSpriteColor = Color.Red; // Flash red on damage
+            mSpriteColor = Color.Red;
             mTimeSinceLastDamage = 0f;
             if (mCurrentHealth <= 0)
             {
@@ -120,6 +129,16 @@ namespace MaskedSpirit.Enemies
         public Rectangle getRectangle()
         {
             return mCollisionRectangle;
+        }
+
+        public EnemyType GetEnemyType()
+        {
+            return mEnemyType;
+        }
+
+        public float GetDamage()
+        {
+            return mDamage;
         }
     }
 }

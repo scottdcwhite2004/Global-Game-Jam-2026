@@ -11,7 +11,7 @@ namespace MaskedSpirit.Weapons
         public CandleWeapon()
         {
 
-            mDamage = 5.0f;
+            mDamage = 20.0f;
             fireRate = 3.0f;
             type = WeaponType.CANDLE;
         }

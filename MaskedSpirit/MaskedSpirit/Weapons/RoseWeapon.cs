@@ -11,8 +11,8 @@ namespace MaskedSpirit.Weapons
         public RoseWeapon()
         {
 
-            mDamage = 1.0f;
-            fireRate = 0.2f;
+            mDamage = 15.0f;
+            fireRate = 1.0f;
             type = WeaponType.ROSE;
         }
 

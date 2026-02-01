@@ -57,5 +57,11 @@ namespace MaskedSpirit.Weapons
             return mDamage;
         }
 
+        public void LevelUp()
+        {
+            mDamage += 0.5f;
+            fireRate = Math.Max(0.1f, fireRate - 0.1f);
+        }
+
     }
 }
