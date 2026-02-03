@@ -10,12 +10,14 @@ namespace MaskedSpirit.Enemies
     internal class EnemySpawner
     {
         public Action<Vector2> OnEnemyDeathDropXP;
-        float mSpawnInterval = 10.0f;
+        float mSpawnInterval = 5.0f;
         float mTimeSinceLastSpawn = 0f;
         List<Enemy> mEnemies;
         List<Enemy> mPreviousDeadEnemies;
         List<Enemy> mCurrentDeadEnemies;
         Random mRandom = new Random();
+        float mMinSpawnInterval = 0.5f;
+        float mSpawnIntervalDecreaseRate = 0.001f;
         public EnemySpawner()
         {
             mEnemies = new List<Enemy>();
@@ -26,6 +28,7 @@ namespace MaskedSpirit.Enemies
         public void Update(float pDeltaTime, Vector2 playerPosition)
         {
             mTimeSinceLastSpawn += pDeltaTime;
+            mSpawnInterval = Math.Max(mMinSpawnInterval, mSpawnInterval - mSpawnIntervalDecreaseRate * pDeltaTime);
             if (mTimeSinceLastSpawn >= mSpawnInterval)
             {
                 SpawnEnemy();
